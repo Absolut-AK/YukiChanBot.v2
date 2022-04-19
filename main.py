@@ -1,13 +1,10 @@
 import os
 import discord
 from discord.ext import commands
-import sqlite3
-import contextlib
+from dataBase import *
 
 from gui.helpText import helps
-#sqlite connection/function
-con = sqlite3.connect('mainData.db')
-cur = con.cursor()
+
 #discord connection
 client = discord.Client()
 client = commands.Bot(command_prefix='-')
@@ -17,17 +14,16 @@ client.remove_command('help')
 @client.event
 async def on_ready():
     await client.change_presence(activity=discord.Game(name="-help for information"))
-    with con:
-        cur.execute('CREATE TABLE IF NOT EXISTS user(id INTEGER, coin INTEGER)')
-        cur.execute('SELECT coin FROM user WHERE id = 1')
-        for i in cur.fetchall():
-            print(i[0])
-        cur.close
-    # with con:
-    #     cur = con.cursor()
-    #     cur.execute('CREATE TABLE IF NOT EXISTS user(id integer, coin integer, bank INTEGER)')
-    #     con.commit()
+    dataRequest('''CREATE TABLE IF NOT EXISTS users(
+        id INTEGER, 
+        coin INTEGER,
+        class TEXT 
+        stats BLOB,
+        inventory BLOB,
+        equipment BLOB)
 
+        ''')
+    dataRequest('INSERT INTO users(id) VALUES(2)')
 
 @client.command()
 async def coinflip(ctx, ammount=0, HorT=None):
