@@ -7,11 +7,11 @@ cur = con.cursor()
 #sqlite3 data outputs and inputs
 def dataRequest(request):
     with con:
-
         cur.execute(request)
         cur.close
     
 def dataPull(request):
     with con:
-        cur = con.cursor()
+        cur.execute(request)
         cur.close
+        return cur.fetchone()

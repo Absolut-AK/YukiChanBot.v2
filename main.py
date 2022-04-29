@@ -1,7 +1,7 @@
-import os
-import discord
+import os, discord, asyncio, random
 from discord.ext import commands
 from dataBase import *
+from casino.DiscordBlackJack import BlackJack
 
 from gui.helpText import helps
 
@@ -14,31 +14,130 @@ client.remove_command('help')
 @client.event
 async def on_ready():
     await client.change_presence(activity=discord.Game(name="-help for information"))
+
+    #user table
     dataRequest('''CREATE TABLE IF NOT EXISTS users(
         id INTEGER, 
         coin INTEGER,
-        class TEXT 
-        stats BLOB,
-        inventory BLOB,
-        equipment BLOB)
-
+        class TEXT)
         ''')
-    dataRequest('INSERT INTO users(id) VALUES(2)')
+    #inventory table
+    dataRequest('''CREATE TABLE IF NOT EXISTS inventory(
+                id INTEGER)''')
+
+    #equipments
+    dataRequest('''CREATE TABLE IF NOT EXISTS weapon(
+                id INTEGER
+                power INTEGER
+                speed INTEGER
+                attack INTEGER
+                critchance INTEGER
+                critdamage INTEGER)
+                ''')
+
+    dataRequest('''CREATE TABLE IF NOT EXISTS helmet(
+                id INTEGER
+                power INTEGER
+                attack INTEGER
+                speed INTEGER
+                endurance INTEGER
+                agility INTEGER
+                stamina INTEGER
+                critchance INTEGER
+                critdamage INTEGER)
+                ''')
+
+    dataRequest('''CREATE TABLE IF NOT EXISTS chest(
+                id INTEGER
+                power INTEGER
+                speed INTEGER
+                endurance INTEGER
+                agility INTEGER
+                stamina INTEGER
+                critchance INTEGER
+                critdamage INTEGER)
+                ''')
+
+    dataRequest('''CREATE TABLE IF NOT EXISTS pants(
+                id INTEGER
+                power INTEGER
+                speed INTEGER
+                endurance INTEGER
+                agility INTEGER
+                stamina INTEGER
+                critchance INTEGER
+                critdamage INTEGER)
+                ''')
+
+    dataRequest('''CREATE TABLE IF NOT EXISTS boots(
+                id INTEGER
+                power INTEGER
+                speed INTEGER
+                endurance INTEGER
+                agility INTEGER
+                stamina INTEGER
+                critchance INTEGER
+                critdamage INTEGER)
+                ''')
+    
+    dataRequest('''CREATE TABLE IF NOT EXISTS redGem(
+                id INTEGER
+                power INTEGER
+                attack INTEGER
+                critchance INTEGER
+                critdamage INTEGER)
+                ''')
+
+    dataRequest('''CREATE TABLE IF NOT EXISTS blueGem(
+                id INTEGER
+                mana INTEGER
+                stamina INTEGER)
+                ''')
+
+    dataRequest('''CREATE TABLE IF NOT EXISTS greenGem(
+                id INTEGER
+                agility INTEGER
+                endurance INTEGER)
+                ''')
 
 @client.command()
-async def coinflip(ctx, ammount=0, HorT=None):
+async def bj(ctx):
     id = ctx.message.author.id
-    # if coin >= 10 and  coin >= ammount:
-    #     if HorT != None:
-    #         HorT = HorT.lower()
-    #     if ammount < 10  or ammount > 100 or HorT == None:
-    #         await ctx.send("Choose your bet(min 10, max 100) and guessing side(-coinflip 10 tails or heads)")
-    #     elif HorT == 'heads' or HorT == 'tails':
-    #         await ctx.send(coinFlip(ammount, HorT, id))
-    #     else:
-    #         await ctx.send("Choose your bet(min 10, max 100) and guessing side(-coinflip 10 tails or heads)")
-    # else:
-    #     await ctx.send("You don't have enough coins. <(￣︶￣)>")
+    b = BlackJack()
+    hand = b.hand()
+
+    async def hitOrStand():
+        try:
+            msg = await client.wait_for("message", timeout=30, check=lambda message: message.author == ctx.author and 
+            message.channel == ctx.channel)
+        except asyncio.TimeoutError:
+            await ctx.send("You took to long")
+
+        if msg.content == 'h':
+            c = b.hit()
+            await ctx.send(f"you got a {c}.")
+            userSum = b.cal(b.userHand)
+            if userSum > 21:
+                await ctx.send("Bust")
+
+            await hitOrStand()
+        elif msg.content == "s":
+            await ctx.send(f"Dealer has {b.dealerHand[0]} and {b.dealerHand[1]}")
+            await ctx.send(b.stand())
+            await ctx.send(f"Dealer hand is {b.dealerHand}")
+        else:
+            await ctx.send("I guess stand...")
+            await ctx.send(f"Dealer has {b.dealerHand[0]} and {b.dealerHand[1]}")
+            await ctx.send(b.stand())
+            await ctx.send(f"Dealer hand is {b.dealerHand}")
+
+    await ctx.send(f"{hand}\n Hit or stand (h/s)")
+    await hitOrStand()
+
+
+
+    
+
 
 @client.command()
 async def help(ctx):
