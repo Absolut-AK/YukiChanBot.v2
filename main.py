@@ -19,7 +19,8 @@ async def on_ready():
     dataRequest('''CREATE TABLE IF NOT EXISTS users(
         id INTEGER, 
         coin INTEGER,
-        class TEXT)
+        class TEXT,
+        UNIQUE(id))
         ''')
     #inventory table
     dataRequest('''CREATE TABLE IF NOT EXISTS inventory(
@@ -32,7 +33,8 @@ async def on_ready():
                 speed INTEGER
                 attack INTEGER
                 critchance INTEGER
-                critdamage INTEGER)
+                critdamage INTEGER,
+                UNIQUE(id))
                 ''')
 
     dataRequest('''CREATE TABLE IF NOT EXISTS helmet(
@@ -44,7 +46,8 @@ async def on_ready():
                 agility INTEGER
                 stamina INTEGER
                 critchance INTEGER
-                critdamage INTEGER)
+                critdamage INTEGER,
+                UNIQUE(id))
                 ''')
 
     dataRequest('''CREATE TABLE IF NOT EXISTS chest(
@@ -55,7 +58,8 @@ async def on_ready():
                 agility INTEGER
                 stamina INTEGER
                 critchance INTEGER
-                critdamage INTEGER)
+                critdamage INTEGER,
+                UNIQUE(id))
                 ''')
 
     dataRequest('''CREATE TABLE IF NOT EXISTS pants(
@@ -66,7 +70,8 @@ async def on_ready():
                 agility INTEGER
                 stamina INTEGER
                 critchance INTEGER
-                critdamage INTEGER)
+                critdamage INTEGER,
+                UNIQUE(id))
                 ''')
 
     dataRequest('''CREATE TABLE IF NOT EXISTS boots(
@@ -77,7 +82,8 @@ async def on_ready():
                 agility INTEGER
                 stamina INTEGER
                 critchance INTEGER
-                critdamage INTEGER)
+                critdamage INTEGER,
+                UNIQUE(id))
                 ''')
     
     dataRequest('''CREATE TABLE IF NOT EXISTS redGem(
@@ -85,20 +91,33 @@ async def on_ready():
                 power INTEGER
                 attack INTEGER
                 critchance INTEGER
-                critdamage INTEGER)
+                critdamage INTEGER,
+                UNIQUE(id))
                 ''')
 
     dataRequest('''CREATE TABLE IF NOT EXISTS blueGem(
                 id INTEGER
                 mana INTEGER
-                stamina INTEGER)
+                stamina INTEGER,
+                UNIQUE(id))
                 ''')
 
     dataRequest('''CREATE TABLE IF NOT EXISTS greenGem(
                 id INTEGER
                 agility INTEGER
-                endurance INTEGER)
+                endurance INTEGER,
+                UNIQUE(id))
                 ''')
+@client.command()
+async def start(ctx):
+    id = ctx.message.author.id
+    try:
+        dataRequest(f'''INSERT INTO users(id) VALUES({id}) 
+        ''')
+        await ctx.send("Inserting...")
+    except Exception:
+        await ctx.send("Already Inserted to DB")
+
 
 @client.command()
 async def bj(ctx):
@@ -107,20 +126,22 @@ async def bj(ctx):
     hand = b.hand()
 
     async def hitOrStand():
+        await ctx.send("Hit or stand (h/s)")
         try:
             msg = await client.wait_for("message", timeout=30, check=lambda message: message.author == ctx.author and 
             message.channel == ctx.channel)
         except asyncio.TimeoutError:
             await ctx.send("You took to long")
-
+        
         if msg.content == 'h':
             c = b.hit()
             await ctx.send(f"you got a {c}.")
             userSum = b.cal(b.userHand)
             if userSum > 21:
                 await ctx.send("Bust")
-
-            await hitOrStand()
+            else:
+                await hitOrStand()
+                
         elif msg.content == "s":
             await ctx.send(f"Dealer has {b.dealerHand[0]} and {b.dealerHand[1]}")
             await ctx.send(b.stand())
@@ -130,8 +151,9 @@ async def bj(ctx):
             await ctx.send(f"Dealer has {b.dealerHand[0]} and {b.dealerHand[1]}")
             await ctx.send(b.stand())
             await ctx.send(f"Dealer hand is {b.dealerHand}")
+        return
 
-    await ctx.send(f"{hand}\n Hit or stand (h/s)")
+    await ctx.send(f"{hand}")
     await hitOrStand()
 
 
