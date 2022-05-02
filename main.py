@@ -1,9 +1,14 @@
 import os, discord, asyncio, random
 from discord.ext import commands
-from dataBase import *
-from casino.DiscordBlackJack import BlackJack
+from casino import blackjack
+from casino.blackjack import BlackJack
+from util.data_base import DataBase
+from casino.blackjack import BlackJack
 
-from gui.helpText import helps
+from gui.help_text import helps
+
+#class Imports
+d = DataBase()
 
 #discord connection
 client = discord.Client()
@@ -14,105 +19,113 @@ client.remove_command('help')
 @client.event
 async def on_ready():
     await client.change_presence(activity=discord.Game(name="-help for information"))
-
     #user table
-    dataRequest('''CREATE TABLE IF NOT EXISTS users(
+    d.dataRequest('''CREATE TABLE IF NOT EXISTS users(
         id INTEGER, 
         coin INTEGER,
         class TEXT,
+        casino_pass BIT,
         UNIQUE(id))
         ''')
     #inventory table
-    dataRequest('''CREATE TABLE IF NOT EXISTS inventory(
-                id INTEGER)''')
+    d.dataRequest('''CREATE TABLE IF NOT EXISTS inventory(
+                id INTEGER,
+                name TEXT,
+                ammount INTEGER,
+                UNIQUE(id))
+                ''')
 
     #equipments
-    dataRequest('''CREATE TABLE IF NOT EXISTS weapon(
-                id INTEGER
-                power INTEGER
-                speed INTEGER
-                attack INTEGER
-                critchance INTEGER
+    d.dataRequest('''CREATE TABLE IF NOT EXISTS weapon(
+                id INTEGER,
+                name TEXT,
+                power INTEGER,
+                speed INTEGER,
+                attack INTEGER,
+                critchance INTEGER,
                 critdamage INTEGER,
                 UNIQUE(id))
                 ''')
 
-    dataRequest('''CREATE TABLE IF NOT EXISTS helmet(
-                id INTEGER
-                power INTEGER
-                attack INTEGER
-                speed INTEGER
-                endurance INTEGER
-                agility INTEGER
-                stamina INTEGER
-                critchance INTEGER
+    d.dataRequest('''CREATE TABLE IF NOT EXISTS helmet(
+                id INTEGER,
+                power INTEGER,
+                attack INTEGER,
+                speed INTEGER,
+                endurance INTEGER,
+                agility INTEGER,
+                stamina INTEGER,
+                critchance INTEGER,
                 critdamage INTEGER,
                 UNIQUE(id))
                 ''')
 
-    dataRequest('''CREATE TABLE IF NOT EXISTS chest(
-                id INTEGER
-                power INTEGER
-                speed INTEGER
-                endurance INTEGER
-                agility INTEGER
-                stamina INTEGER
-                critchance INTEGER
+    d.dataRequest('''CREATE TABLE IF NOT EXISTS chest(
+                id INTEGER,
+                power INTEGER,
+                speed INTEGER,
+                endurance INTEGER,
+                agility INTEGER,
+                stamina INTEGER,
+                critchance INTEGER,
                 critdamage INTEGER,
                 UNIQUE(id))
                 ''')
 
-    dataRequest('''CREATE TABLE IF NOT EXISTS pants(
-                id INTEGER
-                power INTEGER
-                speed INTEGER
-                endurance INTEGER
-                agility INTEGER
-                stamina INTEGER
-                critchance INTEGER
+    d.dataRequest('''CREATE TABLE IF NOT EXISTS pants(
+                id INTEGER,
+                power INTEGER,
+                speed INTEGER,
+                endurance INTEGER,
+                agility INTEGER,
+                stamina INTEGER,
+                critchance INTEGER,
                 critdamage INTEGER,
                 UNIQUE(id))
                 ''')
 
-    dataRequest('''CREATE TABLE IF NOT EXISTS boots(
-                id INTEGER
-                power INTEGER
-                speed INTEGER
-                endurance INTEGER
-                agility INTEGER
-                stamina INTEGER
-                critchance INTEGER
+    d.dataRequest('''CREATE TABLE IF NOT EXISTS boots(
+                id INTEGER,
+                power INTEGER,
+                speed INTEGER,
+                endurance INTEGER,
+                agility INTEGER,
+                stamina INTEGER,
+                critchance INTEGER,
                 critdamage INTEGER,
                 UNIQUE(id))
                 ''')
     
-    dataRequest('''CREATE TABLE IF NOT EXISTS redGem(
-                id INTEGER
-                power INTEGER
-                attack INTEGER
-                critchance INTEGER
+    d.dataRequest('''CREATE TABLE IF NOT EXISTS redGem(
+                id INTEGER,
+                power INTEGER,
+                attack INTEGER,
+                critchance INTEGER,
                 critdamage INTEGER,
                 UNIQUE(id))
                 ''')
 
-    dataRequest('''CREATE TABLE IF NOT EXISTS blueGem(
-                id INTEGER
-                mana INTEGER
+    d.dataRequest('''CREATE TABLE IF NOT EXISTS blueGem(
+                id INTEGER,
+                mana INTEGER,
                 stamina INTEGER,
                 UNIQUE(id))
                 ''')
 
-    dataRequest('''CREATE TABLE IF NOT EXISTS greenGem(
-                id INTEGER
-                agility INTEGER
+    d.dataRequest('''CREATE TABLE IF NOT EXISTS greenGem(
+                id INTEGER,
+                agility INTEGER,
                 endurance INTEGER,
                 UNIQUE(id))
                 ''')
 @client.command()
 async def start(ctx):
     id = ctx.message.author.id
+    
     try:
-        dataRequest(f'''INSERT INTO users(id) VALUES({id}) 
+        d.dataRequest(f'''INSERT INTO users(id, coin, class, casino_pass) VALUES({id}, 500, "Starter", 0) 
+        ''')
+        d.dataRequest(f'''INSERT INTO weapon(id, name, power, attack, speed, critchance, critdamage) VALUES({id}, "Training Sword", 10, 10, 10, 10, 10) 
         ''')
         await ctx.send("Inserting...")
     except Exception:
