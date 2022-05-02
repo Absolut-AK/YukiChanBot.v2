@@ -26,4 +26,4 @@ Ideas/things to add:
 	add more missions/task for money
 
 absolut- todays goal
-starting characters
+starting combat stuffs
