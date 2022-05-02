@@ -26,8 +26,4 @@ Ideas/things to add:
 	add more missions/task for money
 
 absolut- todays goal
-<<<<<<< Updated upstream
 starting combat stuffs
-=======
-starting combat stuffs
->>>>>>> Stashed changes
