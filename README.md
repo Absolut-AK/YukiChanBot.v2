@@ -27,3 +27,4 @@ Ideas/things to add:
 
 absolut- todays goal
 starting combat stuffs
+test
