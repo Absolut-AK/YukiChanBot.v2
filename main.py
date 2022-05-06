@@ -7,7 +7,6 @@ from casino.blackjack import BlackJack
 
 from gui.help_text import helps
 
-#class Imports
 d = DataBase()
 
 #discord connection
@@ -19,114 +18,14 @@ client.remove_command('help')
 @client.event
 async def on_ready():
     await client.change_presence(activity=discord.Game(name="-help for information"))
-    #user table
-    d.dataRequest('''CREATE TABLE IF NOT EXISTS users(
-        id INTEGER, 
-        coin INTEGER,
-        class TEXT,
-        casino_pass BIT,
-        UNIQUE(id))
-        ''')
-    #inventory table
-    d.dataRequest('''CREATE TABLE IF NOT EXISTS inventory(
-                id INTEGER,
-                name TEXT,
-                ammount INTEGER,
-                UNIQUE(id))
-                ''')
 
-    #equipments
-    d.dataRequest('''CREATE TABLE IF NOT EXISTS weapon(
-                id INTEGER,
-                name TEXT,
-                power INTEGER,
-                speed INTEGER,
-                attack INTEGER,
-                critchance INTEGER,
-                critdamage INTEGER,
-                UNIQUE(id))
-                ''')
-
-    d.dataRequest('''CREATE TABLE IF NOT EXISTS helmet(
-                id INTEGER,
-                power INTEGER,
-                attack INTEGER,
-                speed INTEGER,
-                endurance INTEGER,
-                agility INTEGER,
-                stamina INTEGER,
-                critchance INTEGER,
-                critdamage INTEGER,
-                UNIQUE(id))
-                ''')
-
-    d.dataRequest('''CREATE TABLE IF NOT EXISTS chest(
-                id INTEGER,
-                power INTEGER,
-                speed INTEGER,
-                endurance INTEGER,
-                agility INTEGER,
-                stamina INTEGER,
-                critchance INTEGER,
-                critdamage INTEGER,
-                UNIQUE(id))
-                ''')
-
-    d.dataRequest('''CREATE TABLE IF NOT EXISTS pants(
-                id INTEGER,
-                power INTEGER,
-                speed INTEGER,
-                endurance INTEGER,
-                agility INTEGER,
-                stamina INTEGER,
-                critchance INTEGER,
-                critdamage INTEGER,
-                UNIQUE(id))
-                ''')
-
-    d.dataRequest('''CREATE TABLE IF NOT EXISTS boots(
-                id INTEGER,
-                power INTEGER,
-                speed INTEGER,
-                endurance INTEGER,
-                agility INTEGER,
-                stamina INTEGER,
-                critchance INTEGER,
-                critdamage INTEGER,
-                UNIQUE(id))
-                ''')
-    
-    d.dataRequest('''CREATE TABLE IF NOT EXISTS redGem(
-                id INTEGER,
-                power INTEGER,
-                attack INTEGER,
-                critchance INTEGER,
-                critdamage INTEGER,
-                UNIQUE(id))
-                ''')
-
-    d.dataRequest('''CREATE TABLE IF NOT EXISTS blueGem(
-                id INTEGER,
-                mana INTEGER,
-                stamina INTEGER,
-                UNIQUE(id))
-                ''')
-
-    d.dataRequest('''CREATE TABLE IF NOT EXISTS greenGem(
-                id INTEGER,
-                agility INTEGER,
-                endurance INTEGER,
-                UNIQUE(id))
-                ''')
 @client.command()
 async def start(ctx):
     id = ctx.message.author.id
-    
     try:
-        d.dataRequest(f'''INSERT INTO users(id, coin, class, casino_pass) VALUES({id}, 500, "Starter", 0) 
-        ''')
-        d.dataRequest(f'''INSERT INTO weapon(id, name, power, attack, speed, critchance, critdamage) VALUES({id}, "Training Sword", 10, 10, 10, 10, 10) 
-        ''')
+        d.insert(id)
+        d.dataRequest(f'''INSERT INTO users(id, coin, class, casino_pass) VALUES({id}, 500, "Starter", 0)''')
+        d.dataRequest(f'''INSERT INTO weapon(id, name, power, attack, speed, critchance, critdamage) VALUES({id}, "Training Sword", 10, 10, 10, 10, 10)''')
         await ctx.send("Inserting...")
     except Exception:
         await ctx.send("Already Inserted to DB")
@@ -154,25 +53,24 @@ async def bj(ctx):
                 await ctx.send("Bust")
             else:
                 await hitOrStand()
-                
-        elif msg.content == "s":
-            await ctx.send(f"Dealer has {b.dealerHand[0]} and {b.dealerHand[1]}")
-            await ctx.send(b.stand())
-            await ctx.send(f"Dealer hand is {b.dealerHand}")
         else:
-            await ctx.send("I guess stand...")
             await ctx.send(f"Dealer has {b.dealerHand[0]} and {b.dealerHand[1]}")
-            await ctx.send(b.stand())
-            await ctx.send(f"Dealer hand is {b.dealerHand}")
-        return
+            outcome = b.stand()
+            for i, j in enumerate(b.dealerHand):
+                if i >= 2:
+                    await ctx.send(f"Dealer Hit:{j}")
+                    await asyncio.sleep(0.5)
+            await asyncio.sleep(1)
+            await ctx.send(outcome)
+            return
 
     await ctx.send(f"{hand}")
     await hitOrStand()
 
-
-
-    
-
+@client.command()
+async def test(ctx):
+    id = ctx.message.author.id
+    d.dataPullAll()
 
 @client.command()
 async def help(ctx):

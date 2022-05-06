@@ -3,7 +3,7 @@ import random
 class BlackJack:
     def __init__(self):
         self.card = [2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 6, 6, 6, 6, 7, 7, 7, 7, 8, 8, 8, 8, 9, 9, 9, 9, 10, 10, 10, 10,
-        "j", "j", "j", "j", "q", "q", "q", "q", "k", "k", "k", "k", "a", "a", "a", "a"]
+        "Jack", "Jack", "Jack", "Jack", "Queen", "Queen", "Queen", "Queen", "King", "King", "King", "King", "Ace", "Ace", "Ace", "Ace"]
         self.dealerHand = []
         self.userHand = []
     
@@ -33,8 +33,6 @@ class BlackJack:
         self.userHand.append(card)
         self.card.remove(card)
         return card
-
-
 
     #stand
     def stand(self):
@@ -67,14 +65,14 @@ class BlackJack:
         for i in hand:
             if isinstance(i, int):
                 sum += i
-            elif i == "j" or i == "q" or i == "k":
+            elif i == "Jack" or i == "Queen" or i == "King":
                 sum += 10
             else:
                 sum += 11
         #count aces'
         if sum > 21:
             for i in hand:
-                if i == 'a':
+                if i == 'Ace':
                     aces += 1
             while sum > 21 and aces > 0:
                 aces -= 1
