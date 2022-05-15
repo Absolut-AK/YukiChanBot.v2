@@ -21,16 +21,13 @@ d.dataRequest('''CREATE TABLE IF NOT EXISTS inventory(
 d.dataRequest('''CREATE TABLE IF NOT EXISTS stats(
             id INTEGER,
             name TEXT,
+            health INTEGER,
             power INTEGER,
             attack INTEGER,
             speed INTEGER,
             agility INTEGER,
             critchance INTEGER,
             critdamage INTEGER,
-            burn INTEGER,
-            shock INTEGER,
-            poison INTEGER,
-            freeze INTEGER,
             abilityslot1 TEXT,
             abilityslot2 TEXT,
             abilityslot3 TEXT,
@@ -61,6 +58,7 @@ d.dataRequest('''CREATE TABLE IF NOT EXISTS weapon(
 d.dataRequest('''CREATE TABLE IF NOT EXISTS helmet(
             id INTEGER,
             name TEXT,
+            health INTEGER,
             power INTEGER,
             attack INTEGER,
             speed INTEGER,
@@ -73,6 +71,7 @@ d.dataRequest('''CREATE TABLE IF NOT EXISTS helmet(
 d.dataRequest('''CREATE TABLE IF NOT EXISTS chest(
             id INTEGER,
             name TEXT,
+            health INTEGER,
             power INTEGER,
             attack INTEGER,
             speed INTEGER,
@@ -85,6 +84,7 @@ d.dataRequest('''CREATE TABLE IF NOT EXISTS chest(
 d.dataRequest('''CREATE TABLE IF NOT EXISTS pants(
             id INTEGER,
             name TEXT,
+            health INTEGER,
             power INTEGER,
             attack INTEGER,
             speed INTEGER,
@@ -97,6 +97,7 @@ d.dataRequest('''CREATE TABLE IF NOT EXISTS pants(
 d.dataRequest('''CREATE TABLE IF NOT EXISTS boots(
             id INTEGER,
             name TEXT,
+            health INTEGER,
             power INTEGER,
             attack INTEGER,
             speed INTEGER,
@@ -108,6 +109,7 @@ d.dataRequest('''CREATE TABLE IF NOT EXISTS boots(
 
 d.dataRequest('''CREATE TABLE IF NOT EXISTS redGem(
             id INTEGER,
+            health INTEGER,
             power INTEGER,
             attack INTEGER,
             critchance INTEGER,
@@ -133,6 +135,7 @@ d.dataRequest('''CREATE TABLE IF NOT EXISTS greenGem(
 d.dataRequest('''CREATE TABLE IF NOT EXISTS enemy1(
             id INTEGER,
             name TEXT,
+            health INTEGER,
             power INTEGER,
             attack INTEGER,
             speed INTEGER,
@@ -156,6 +159,7 @@ d.dataRequest('''CREATE TABLE IF NOT EXISTS enemy1(
 d.dataRequest('''CREATE TABLE IF NOT EXISTS enemy2(
             id INTEGER,
             name TEXT,
+            health INTEGER,
             power INTEGER,
             attack INTEGER,
             speed INTEGER,
@@ -179,6 +183,7 @@ d.dataRequest('''CREATE TABLE IF NOT EXISTS enemy2(
 d.dataRequest('''CREATE TABLE IF NOT EXISTS enemy3(
             id INTEGER,
             name TEXT,
+            health INTEGER,
             power INTEGER,
             attack INTEGER,
             speed INTEGER,
@@ -202,6 +207,7 @@ d.dataRequest('''CREATE TABLE IF NOT EXISTS enemy3(
 d.dataRequest('''CREATE TABLE IF NOT EXISTS enemy4(
             id INTEGER,
             name TEXT,
+            health INTEGER,
             power INTEGER,
             attack INTEGER,
             speed INTEGER,
@@ -225,6 +231,7 @@ d.dataRequest('''CREATE TABLE IF NOT EXISTS enemy4(
 d.dataRequest('''CREATE TABLE IF NOT EXISTS enemy5(
             id INTEGER,
             name TEXT,
+            health INTEGER,
             power INTEGER,
             attack INTEGER,
             speed INTEGER,
@@ -248,6 +255,7 @@ d.dataRequest('''CREATE TABLE IF NOT EXISTS enemy5(
 d.dataRequest('''CREATE TABLE IF NOT EXISTS enemy6(
             id INTEGER,
             name TEXT,
+            health INTEGER,
             power INTEGER,
             attack INTEGER,
             speed INTEGER,

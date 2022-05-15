@@ -1,6 +1,9 @@
 class Abilities():
     def __init__(self):
-        print('works')
+        pass
     
-    def test(self):
-        print("self")
+    def checkAbility(self, dic, ability):
+        if dic.get(ability) != None:
+            return True
+        else:
+            return False

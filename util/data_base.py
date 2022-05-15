@@ -20,13 +20,12 @@ class DataBase():
             self.cur.close
             return self.cur.fetchone()
 
-    def dataPullAll(self):
+    def dicPull(self, id, table):
         with self.con:
             self.cur = self.con.cursor()
-            self.cur.execute("SELECT * FROM users WHERE id = 1")
+            self.cur.execute(f"SELECT * FROM {table} WHERE id = {id}")
             result = [dict(row) for row in self.cur.fetchall()]
-            for i in result:
-                print(i)
+            return result[0]
 
     def insert(self, id):
         with self.con:
@@ -75,4 +74,3 @@ class DataBase():
             self.cur.execute(f'''
             INSERT INTO stats(id) VALUES({id})
             ''')
-            self.cur.close()

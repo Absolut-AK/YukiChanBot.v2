@@ -1,9 +1,10 @@
 import os, discord, asyncio, random
 from discord.ext import commands
-from casino import blackjack
 from casino.blackjack import BlackJack
 from util.data_base import DataBase
-from casino.blackjack import BlackJack
+from combat.fighting_system import Fight
+from combat.abilities import Abilities
+from combat.user_stats import UserStats
 
 from gui.help_text import helps
 
@@ -22,10 +23,14 @@ async def on_ready():
 @client.command()
 async def start(ctx):
     id = ctx.message.author.id
+    d.insert(id)
+    d.dataRequest(f'''INSERT INTO users(id, coin, class, casino_pass) VALUES({id}, 500, "Starter", 0)''')
+    d.dataRequest(f'''INSERT INTO weapon(id, name, power, attack, speed, critchance, critdamage) VALUES({id}, "Training Sword", 10, 10, 10, 10, 10)''')
+    #test
+    d.dataRequest(f'''UPDATE enemy1 SET health = 10, power = 10, attack = 10, speed = 10 WHERE id={id}''')
+    d.dataRequest(f'''UPDATE stats SET health = 10, power = 10, attack = 10, speed = 10 WHERE id={id}''')
     try:
-        d.insert(id)
-        d.dataRequest(f'''INSERT INTO users(id, coin, class, casino_pass) VALUES({id}, 500, "Starter", 0)''')
-        d.dataRequest(f'''INSERT INTO weapon(id, name, power, attack, speed, critchance, critdamage) VALUES({id}, "Training Sword", 10, 10, 10, 10, 10)''')
+        pass
         await ctx.send("Inserting...")
     except Exception:
         await ctx.send("Already Inserted to DB")
@@ -83,6 +88,30 @@ async def help(ctx):
 async def starter(ctx):
     id = ctx.message.author.id
 
+@client.command()
+async def proto(ctx):
+    id = ctx.message.author.id
+    a = Abilities()
+    u = UserStats()
+    user = u.statCalculation(d.dicPull(id, 'stats'), d.dicPull(id, 'weapon'), d.dicPull(id, 'helmet'), d.dicPull(id, 'chest'), d.dicPull(id, 'pants'), d.dicPull(id, 'boots'))
+    f = Fight(user, n1=d.dicPull(id, 'enemy1'), n2=d.dicPull(id, 'enemy2'), n3=d.dicPull(id, 'enemy3'), n4=d.dicPull(id, 'enemy4'), n5=d.dicPull(id, 'enemy5'), n6=d.dicPull(id, 'enemy6'))
+
+    async def message():
+        try:
+            msg = await client.wait_for("message", timeout=30, check=lambda message: message.author == ctx.author and 
+            message.channel == ctx.channel)
+        except asyncio.TimeoutError:
+            await ctx.send("You took to long")
+        return msg.content
+    async def attacks():
+        await ctx.send("ability")
+        msg1 = await message()
+        await ctx.send("enemyNumber")
+        msg2 = await message()
+        a, b = f.attackChoice(msg1, msg2)
+        f.fightingSytem(b, a)
+
+    await attacks()
 #path to YukiChanBot's token and executes it
 path = "..\\YukiChanToken"
 os.chdir(path)

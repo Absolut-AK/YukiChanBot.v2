@@ -7,24 +7,19 @@ class UserStats():
         self.endurance = 0
 
     def statCalculation(self, *args):
+        print(args)
         for i in args:
-            if 'power' in i:
-                self.power += i.get('power')
-            if 'attack' in i:
-                self.attack += i.get('attack')
-            if 'speed' in i:
-                self.speed += i.get('speed')
-            if 'agility' in i:
-                self.agility += i.get('agility')
-            if 'endurance' in i:
-                self.endurance += i.get('endurance')
+            print(i)
+            if i != None:
+                if 'power' in i and i.get('power') != None:
+                    self.power += i.get('power')
+                if 'attack' in i and i.get('attack') != None:
+                    self.attack += i.get('attack')
+                if 'speed' in i and i.get('speed') != None:
+                    self.speed += i.get('speed')
+                if 'agility' in i and i.get('agility') != None:
+                    self.agility += i.get('agility')
+                if 'endurance' in i and i.get('endurance') != None:
+                    self.endurance += i.get('endurance')
 
         return {'power':self.power, 'attack':self.attack, 'speed':self.speed, 'agility':self.agility, 'endurance':self.endurance}
-
-s = UserStats()
-
-boots = {"power": 10, "agility":10}
-weapon = {"power":10, "attack":10, "speed":10}
-pants = {"power":10, "attack":10, "speed":10}
-
-print(s.statCalculation(boots, weapon, pants))
