@@ -1,5 +1,9 @@
+from code import interact
+from msilib.schema import Component
+import time
 import os, discord, asyncio, random
 from discord.ext import commands
+from discord_components import *
 from casino.blackjack import BlackJack
 from util.data_base import DataBase
 from combat.fighting_system import Fight
@@ -18,16 +22,18 @@ client.remove_command('help')
 #commands
 @client.event
 async def on_ready():
+    DiscordComponents(client)
     await client.change_presence(activity=discord.Game(name="-help for information"))
 
 @client.command()
 async def start(ctx):
+    print("works")
     id = ctx.message.author.id
     d.insert(id)
     d.dataRequest(f'''INSERT INTO users(id, coin, class, casino_pass) VALUES({id}, 500, "Starter", 0)''')
     d.dataRequest(f'''INSERT INTO weapon(id, name, power, attack, speed, critchance, critdamage) VALUES({id}, "Training Sword", 10, 10, 10, 10, 10)''')
     #test
-    d.dataRequest(f'''UPDATE enemy1 SET health = 10, power = 10, attack = 10, speed = 10 WHERE id={id}''')
+    d.dataRequest(f'''UPDATE enemy1 SET health = 100, power = 10, attack = 10, speed = 10 WHERE id={id}''')
     d.dataRequest(f'''UPDATE stats SET health = 10, power = 10, attack = 10, speed = 10 WHERE id={id}''')
     try:
         pass
@@ -75,7 +81,34 @@ async def bj(ctx):
 @client.command()
 async def test(ctx):
     id = ctx.message.author.id
-    d.dataPullAll()
+    async def testFunc():
+        await ctx.send("Hmmm")
+    buttons = [
+        [
+            Button(style=ButtonStyle.blue, label= 'Ability1'),
+            Button(style=ButtonStyle.blue, label= 'Ability2'),
+            Button(style=ButtonStyle.blue, label= 'Ability3'),
+            Button(style=ButtonStyle.blue, label= 'Ability4'),
+        ],
+        [
+            Button(style=ButtonStyle.red, label= 'Ability5'),
+            Button(style=ButtonStyle.red, label= 'Ability6'),
+            Button(style=ButtonStyle.red, label= 'Ability7'),
+            Button(style=ButtonStyle.red, label= 'Ability8')
+        ]
+    ]
+    await ctx.send("This is a test", components=buttons)
+    t = time.time()
+    t2 = int(time.time() - t)
+    while t2 < 60:
+        t2 = int(time.time() - t)
+        res = await client.wait_for("button_click")
+        await res.respond(type=6)
+        if res.component.label == "Ability1":
+            await ctx.send("A1")
+        elif res.component.label == "Ability2":
+            await ctx.send("A2")
+
 
 @client.command()
 async def help(ctx):
@@ -104,12 +137,11 @@ async def proto(ctx):
             await ctx.send("You took to long")
         return msg.content
     async def attacks():
-        await ctx.send("ability")
-        msg1 = await message()
         await ctx.send("enemyNumber")
-        msg2 = await message()
-        a, b = f.attackChoice(msg1, msg2)
-        f.fightingSytem(b, a)
+        a = await message()
+        await ctx.send("ability")
+        b = await message()
+        f.fightingSytem(int(a)-1, b)
 
     await attacks()
 #path to YukiChanBot's token and executes it

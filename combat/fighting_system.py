@@ -1,3 +1,6 @@
+import re
+
+
 class Fight():
     def __init__(self, user, n1, n2, n3, n4, n5, n6):
         self.user = user
@@ -10,35 +13,52 @@ class Fight():
         self.enemy = [n1, n2, n3, n4, n5, n6]
 
     def fightingSytem(self, enemyN, ability=None):
-        i = self.n1.get('health')
-        while self.checkHp():
-            print(self.n1.get('health'))
-            i -= 1
-            self.n1['health'] = i
+        eS = self.enemy[enemyN].get('speed')
+        uS = self.user.get('speed')
+        if ability == None or 'a':
+            #attack
+            if eS >= uS:
+                if self.enemyAttack(enemyN):
+                    self.userAttack(enemyN)
+            else:
+                if self.userAttack(enemyN):
+                    self.enemyAttack(enemyN)
+        else:
+            #ability
+            pass
+        print(self.n1.get('health'), self.user.get('health'))
+
     
     def fightingLog(self):
         pass
     
-    def attackChoice(self, ability, enemyN):
-        print(enemyN, self.n1)
-        if enemyN == '1':
-            enemyN = self.n1
-        elif enemyN == '2':
-            enemyN = self.n2
-        elif enemyN == '3':
-            enemyN = self.n3
-        elif enemyN == '4':
-            enemyN = self.n4
-        elif enemyN == '5':
-            enemyN = self.n5
-        elif enemyN == '6':
-            enemyN = self.n6
+    def userAttack(self, enemyN):
+        print('uAttack')
+        eH = self.enemy[enemyN].get('health')
+        uA = self.user.get('attack')
         
-        return enemyN, ability
-    
+        result = eH - uA
+        self.enemy[enemyN]['health'] = result
+        
+        if result > 0:
+            return True
+        else:
+            return False
+
+    def enemyAttack(self, enemyN):
+        print('eAttack')
+        uH = self.user.get('health')
+        eA = self.enemy[enemyN].get('attack')
+        result = uH - eA
+        self.user['health'] = result
+
+        if result > 0:
+            return True
+        else:
+            return False
+
     def checkHp(self):
         for i in self.enemy:
-            print(i)
             if i.get('health') == None or i.get('health') > 0:
                 return True
             else:
