@@ -1,7 +1,9 @@
 from code import interact
 from msilib.schema import Component
+from sre_constants import SUCCESS
 import time
 import os, discord, asyncio, random
+from tkinter import E
 from discord.ext import commands
 from discord_components import *
 from casino.blackjack import BlackJack
@@ -84,18 +86,23 @@ async def test(ctx):
     async def testFunc():
         await ctx.send("Hmmm")
     buttons = [
-        [
+        ActionRow(
             Button(style=ButtonStyle.blue, label= 'Ability1'),
             Button(style=ButtonStyle.blue, label= 'Ability2'),
             Button(style=ButtonStyle.blue, label= 'Ability3'),
-            Button(style=ButtonStyle.blue, label= 'Ability4'),
-        ],
-        [
-            Button(style=ButtonStyle.red, label= 'Ability5'),
-            Button(style=ButtonStyle.red, label= 'Ability6'),
-            Button(style=ButtonStyle.red, label= 'Ability7'),
-            Button(style=ButtonStyle.red, label= 'Ability8')
-        ]
+            Button(style=ButtonStyle.blue, label= 'Ability4')
+        ),
+        ActionRow(
+            Button(style=2, label= 'Ability6'),
+            Button(style=2, label= 'Ability7'),
+            Button(style=2, label= 'Ability8'),
+            Button(style=2, label= 'Ability5')
+        ),
+        ActionRow(
+            Button(style=3, label= 'Done'),
+            Button(style=4, label= 'Exit'),
+            Button(style=5, label= 'GitHub', url='https://github.com/Absolut-AK/YukiChanBot.v2'),
+        )
     ]
     await ctx.send("This is a test", components=buttons)
     t = time.time()
@@ -129,19 +136,56 @@ async def proto(ctx):
     user = u.statCalculation(d.dicPull(id, 'stats'), d.dicPull(id, 'weapon'), d.dicPull(id, 'helmet'), d.dicPull(id, 'chest'), d.dicPull(id, 'pants'), d.dicPull(id, 'boots'))
     f = Fight(user, n1=d.dicPull(id, 'enemy1'), n2=d.dicPull(id, 'enemy2'), n3=d.dicPull(id, 'enemy3'), n4=d.dicPull(id, 'enemy4'), n5=d.dicPull(id, 'enemy5'), n6=d.dicPull(id, 'enemy6'))
 
-    async def message():
-        try:
-            msg = await client.wait_for("message", timeout=30, check=lambda message: message.author == ctx.author and 
-            message.channel == ctx.channel)
-        except asyncio.TimeoutError:
-            await ctx.send("You took to long")
-        return msg.content
+    buttons = [
+        [
+            Button(style=ButtonStyle.blue, label= 'Enemy1'),
+            Button(style=ButtonStyle.blue, label= 'Enemy2'),
+            Button(style=ButtonStyle.blue, label= 'Enemy3'),
+            Button(style=ButtonStyle.blue, label= 'Enemy4'),
+        ],
+        [
+            Button(style=2, label= 'Ability1'),
+            Button(style=2, label= 'Ability2'),
+            Button(style=2, label= 'Ability3'),
+            Button(style=2, label= 'Ability4')
+        ],
+        [
+            Button(style=3, label= 'Done'),
+            Button(style=4, label= 'Exit')
+        ]
+    ]
+    
+    
+
     async def attacks():
-        await ctx.send("enemyNumber")
-        a = await message()
-        await ctx.send("ability")
-        b = await message()
-        f.fightingSytem(int(a)-1, b)
+        text = "Pick a Enemy and Ability:"
+        
+        embed = discord.Embed(title="Fighting Prototype", description=text)
+        await ctx.send(embed=embed, components=buttons)
+        t = time.time()
+        t2 = int(time.time() - t)
+        enemy = None
+        ability = None
+        done = None
+        while t2 < 60 and done == None:
+            t2 = int(time.time() - t)
+            res = await client.wait_for("button_click")
+            await res.respond(type=6)
+            if res.component.label == "Enemy1":
+                await ctx.send("E1")
+                enemy = 1
+            elif res.component.label == "Ability1":
+                await ctx.send("A1")
+                ability = 1
+            elif res.component.label == "Done":
+                if enemy != None and ability != None:
+                    await ctx.send("Done")
+                    f = discord.Embed(title="Fighting Prototype", description=text)
+                    await res.respond(content= '', embed=f, components= [])
+                    break
+                else:
+                    await ctx.send("You haven't picked Enemy or Ability")
+            
 
     await attacks()
 #path to YukiChanBot's token and executes it
