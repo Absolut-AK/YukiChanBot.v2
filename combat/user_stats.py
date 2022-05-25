@@ -22,5 +22,4 @@ class UserStats():
                     self.agility += i.get('agility')
                 if 'endurance' in i and i.get('endurance') != None:
                     self.endurance += i.get('endurance')
-        print(self.health)
         return {'health':self.health, 'power':self.power, 'attack':self.attack, 'speed':self.speed, 'agility':self.agility, 'endurance':self.endurance}

@@ -10,12 +10,13 @@ class Fight():
         self.n4 = n4
         self.n5 = n5
         self.n6 = n6
-        self.enemy = [n1, n2, n3, n4, n5, n6]
+        self.enemy = [self.n1, self.n2, self.n3, self.n4, self.n5, self.n6]
 
-    def fightingSytem(self, enemyN, ability=None):
+    def fightingSytem(self, enemyN, attack):
+        enemyN -= 1
         eS = self.enemy[enemyN].get('speed')
         uS = self.user.get('speed')
-        if ability == None or 'a':
+        if attack == 1:
             #attack
             if eS >= uS:
                 if self.enemyAttack(enemyN):
@@ -26,11 +27,20 @@ class Fight():
         else:
             #ability
             pass
-        print(self.n1.get('health'), self.user.get('health'))
+        return self.enemy[enemyN].get('health'), self.user.get('health')
 
     
     def fightingLog(self):
-        pass
+        text = f"Your Health: {self.user.get('health')}❤ \n"
+        for j, i in enumerate(self.enemy):
+            if i.get('health') == None:
+                pass
+            elif i == self.n3 or i == self.n6 and i != None:
+                text += f"Enemy{j+1}: {i.get('health')}❤ \n"
+            else:
+                text += f"Enemy{j+1}: {i.get('health')}❤ \t"
+
+        return text
     
     def userAttack(self, enemyN):
         print('uAttack')

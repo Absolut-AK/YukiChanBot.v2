@@ -14,11 +14,15 @@ class DataBase():
             self.cur.execute(request)
             self.cur.close
         
-    def dataPull(self, request):
+    def dataPull(self, id, select, table):
         with self.con:
-            self.cur.execute(request)
+            self.cur.execute(f"SELECT {select} FROM {table} WHERE id = {id}")
             self.cur.close
-            return self.cur.fetchone()
+            result = self.cur.fetchone()
+            if result[0] == None:
+                return 'None', True
+            else:
+                return result[0], False
 
     def dicPull(self, id, table):
         with self.con:
@@ -26,6 +30,11 @@ class DataBase():
             self.cur.execute(f"SELECT * FROM {table} WHERE id = {id}")
             result = [dict(row) for row in self.cur.fetchall()]
             return result[0]
+    def noneToTrue(self, val):
+        if val == None:
+            return True
+        else:
+            return False
 
     def insert(self, id):
         with self.con:
